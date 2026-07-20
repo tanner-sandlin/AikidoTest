@@ -26,3 +26,13 @@ CREATE TABLE Orders (
 
 INSERT INTO Users (Username, PasswordHash, IsAdmin) VALUES
     ('admin', '21232f297a57a5a743894a0e4a801fc3', 1); -- MD5('admin')
+
+CREATE TABLE Reviews (
+    ReviewId INT IDENTITY PRIMARY KEY,
+    ProductId INT NOT NULL,
+    Author NVARCHAR(200) NOT NULL,
+    Body NVARCHAR(MAX) NOT NULL,
+    AvatarUrl NVARCHAR(2000) NULL,
+    AttachmentPath NVARCHAR(500) NULL,
+    CreatedUtc DATETIME NOT NULL DEFAULT GETUTCDATE()
+);

@@ -1,0 +1,33 @@
+@model System.Collections.Generic.List<AikidoTest.Web.Models.ReviewModel>
+@{
+    ViewBag.Title = "Product Reviews";
+}
+
+<h2>Reviews for Product #@ViewBag.ProductId</h2>
+
+@Html.ActionLink("Write a review", "Create", "Reviews", new { productId = ViewBag.ProductId }, null)
+
+<ul>
+    @foreach (var review in Model)
+    {
+        <li>
+            <strong>@review.Author</strong> — @review.CreatedUtc.ToString("yyyy-MM-dd")
+            <!-- CWE-79: stored XSS — review body is persisted user input rendered with
+                 Html.Raw instead of being HTML-encoded, so a malicious review containing
+                 <script> is executed for every visitor who views this product's reviews. -->
+            <p>@Html.Raw(review.Body)</p>
+
+            @if (!string.IsNullOrEmpty(review.AttachmentPath))
+            {
+                <p><a href="@review.AttachmentPath">Download attachment</a></p>
+            }
+
+            @using (Html.BeginForm("Delete", "Reviews", FormMethod.Post))
+            {
+                @Html.Hidden("reviewId", review.ReviewId)
+                @Html.Hidden("productId", review.ProductId)
+                <button type="submit">Delete</button>
+            }
+        </li>
+    }
+</ul>
