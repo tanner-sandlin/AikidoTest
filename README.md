@@ -52,7 +52,7 @@ AikidoTest.Web/
 | 21 | Weak/hardcoded machineKey | `Web.config` | CWE-321, static `validationKey`/`decryptionKey` with `decryption="DES"` |
 | 22 | Permissive CORS | `Web.config` | CWE-942, `Access-Control-Allow-Origin: *` |
 | 23 | Directory browsing enabled | `Web.config` | CWE-548, `directoryBrowse enabled="true"` |
-| 24 | Outdated/vulnerable dependencies | `packages.config` | SCA target: jQuery 1.4.1, Microsoft.AspNet.Mvc 5.0.0, Newtonsoft.Json 6.0.4, bootstrap 3.0.0, log4net 1.2.10, etc. |
+| 24 | Outdated/vulnerable dependencies | `packages.config` | SCA target: jQuery 1.4.1, Microsoft.AspNet.Mvc 5.0.0, Newtonsoft.Json 6.0.4, bootstrap 3.0.0, etc. (log4net fixed — see below) |
 
 ## Notes for evaluating the SAST tool
 
@@ -67,3 +67,13 @@ AikidoTest.Web/
 - The project references NuGet packages by hint path but the `packages/`
   folder is not included — restore isn't required for source-based SAST
   scanning, only for an actual `msbuild`/IIS deployment.
+
+## Fixed vulnerabilities
+
+Some planted issues have since been remediated on `master`, useful as a
+before/after check on the SAST tool's re-scan / resolved-finding tracking:
+
+| Original issue | Fix |
+|---|---|
+| OS command injection in `AdminController.Ping` (CWE-78) | `PING.EXE` invoked directly with `ProcessStartInfo.ArgumentList`, plus a hostname allow-list — see branch `fix/admin-ping-command-injection` |
+| log4net < 2.0.10 XXE in config parsing (CVE-2018-1285) | `packages.config` / `AikidoTest.Web.csproj` bumped to log4net 2.0.10 — see branch `fix/log4net-xxe-cve-2018-1285` |
