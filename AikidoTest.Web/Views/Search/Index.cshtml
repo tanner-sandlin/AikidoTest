@@ -1,0 +1,24 @@
+@{
+    ViewBag.Title = "Search";
+}
+
+<h2>Search Products</h2>
+
+@using (Html.BeginForm("Index", "Search", FormMethod.Get))
+{
+    <input type="text" name="q" value="@ViewBag.RawQuery" />
+    <button type="submit">Search</button>
+}
+
+<!-- CWE-79: reflected XSS sink — the query is written back unencoded via Html.Raw -->
+<p>You searched for: @Html.Raw(ViewBag.RawQuery)</p>
+
+<ul>
+    @if (ViewBag.Results != null)
+    {
+        foreach (var item in ViewBag.Results)
+        {
+            <li>@item</li>
+        }
+    }
+</ul>

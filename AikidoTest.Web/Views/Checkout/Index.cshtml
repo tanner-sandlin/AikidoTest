@@ -1,0 +1,32 @@
+@model AikidoTest.Web.Models.CreditCardModel
+@{
+    ViewBag.Title = "Checkout";
+}
+
+<h2>Checkout</h2>
+
+@using (Html.BeginForm("Index", "Checkout", FormMethod.Post))
+{
+    <p>
+        @Html.LabelFor(m => m.CardHolderName)
+        @Html.TextBoxFor(m => m.CardHolderName)
+    </p>
+    <p>
+        @Html.LabelFor(m => m.CardNumber)
+        @Html.TextBoxFor(m => m.CardNumber)
+    </p>
+    <p>
+        @Html.LabelFor(m => m.ExpiryMonth) / @Html.LabelFor(m => m.ExpiryYear)
+        @Html.TextBoxFor(m => m.ExpiryMonth)
+        @Html.TextBoxFor(m => m.ExpiryYear)
+    </p>
+    <p>
+        @Html.LabelFor(m => m.Cvv)
+        @Html.TextBoxFor(m => m.Cvv)
+    </p>
+    <p>
+        @Html.LabelFor(m => m.Amount)
+        @Html.TextBoxFor(m => m.Amount)
+    </p>
+    <button type="submit">Pay</button>
+}
