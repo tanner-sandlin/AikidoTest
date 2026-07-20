@@ -19,6 +19,7 @@ AikidoTest.Web/
     FilesController.cs     # path traversal
     AdminController.cs     # XXE, insecure deserialization, command injection
     RedirectController.cs  # open redirect
+    ReviewsController.cs   # stored XSS, SSRF, unrestricted file upload, IDOR
   Utils/
     AppLogger.cs            # unredacted file logger (the PCI logging sink)
     CryptoHelper.cs          # MD5 password hashing, DES "encryption"
@@ -53,6 +54,10 @@ AikidoTest.Web/
 | 22 | Permissive CORS | `Web.config` | CWE-942, `Access-Control-Allow-Origin: *` |
 | 23 | Directory browsing enabled | `Web.config` | CWE-548, `directoryBrowse enabled="true"` |
 | 24 | Outdated/vulnerable dependencies | `packages.config` | SCA target: jQuery 1.4.1, Microsoft.AspNet.Mvc 5.0.0, Newtonsoft.Json 6.0.4, bootstrap 3.0.0, etc. (log4net fixed — see below) |
+| 25 | Stored XSS | `ReviewsController.Index` + `Views/Reviews/Index.cshtml` | CWE-79, review body is persisted then rendered with `Html.Raw` |
+| 26 | Server-Side Request Forgery | `ReviewsController.Create(POST)` | CWE-918, attacker-supplied `AvatarUrl` fetched server-side with `WebClient` and no scheme/host allow-list |
+| 27 | Unrestricted file upload | `ReviewsController.Create(POST)` | CWE-434, uploaded attachment saved under the trusted filename/extension into a web-servable directory with no type validation |
+| 28 | Broken access control (IDOR) | `ReviewsController.Delete` | CWE-862/CWE-639, any caller can delete any review by `reviewId` with no ownership or authentication check |
 
 ## Notes for evaluating the SAST tool
 

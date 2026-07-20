@@ -1,0 +1,28 @@
+@model AikidoTest.Web.Models.ReviewModel
+@{
+    ViewBag.Title = "Write a Review";
+}
+
+<h2>Write a Review for Product #@ViewBag.ProductId</h2>
+
+@using (Html.BeginForm("Create", "Reviews", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.Hidden("ProductId", ViewBag.ProductId)
+    <p>
+        <label>Name</label>
+        <input type="text" name="Author" />
+    </p>
+    <p>
+        <label>Review</label>
+        <textarea name="Body" rows="5" cols="40"></textarea>
+    </p>
+    <p>
+        <label>Avatar image URL (optional)</label>
+        <input type="text" name="AvatarUrl" />
+    </p>
+    <p>
+        <label>Attachment (optional)</label>
+        <input type="file" name="attachment" />
+    </p>
+    <button type="submit">Submit review</button>
+}

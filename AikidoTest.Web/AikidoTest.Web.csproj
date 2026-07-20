@@ -109,8 +109,10 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\RedirectController.cs" />
     <Compile Include="Controllers\OrderReportController.cs" />
+    <Compile Include="Controllers\ReviewsController.cs" />
     <Compile Include="Models\CreditCardModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\ReviewModel.cs" />
     <Compile Include="Utils\AppLogger.cs" />
     <Compile Include="Utils\CryptoHelper.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -131,6 +133,8 @@
     <Content Include="Views\Checkout\Index.cshtml" />
     <Content Include="Views\Checkout\Confirmation.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
+    <Content Include="Views\Reviews\Index.cshtml" />
+    <Content Include="Views\Reviews\Create.cshtml" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
