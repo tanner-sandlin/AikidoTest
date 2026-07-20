@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 using System.Xml;
 
@@ -42,23 +44,36 @@ namespace AikidoTest.Web.Controllers
             }
         }
 
-        // CWE-78: OS Command Injection — user input is concatenated into a shell
-        // command line instead of being passed as a discrete, validated argument.
+        // Fixed CWE-78: no shell is invoked (cmd.exe /c is gone, so shell
+        // metacharacters like & | ; ` $() can no longer be interpreted), and
+        // host is validated against a strict hostname/IPv4 allow-list before
+        // it is ever used, so only a well-formed host can reach Process.Start.
+        private static readonly Regex ValidHostPattern =
+            new Regex(@"^[a-zA-Z0-9](?:[a-zA-Z0-9\-\.]{0,252})?[a-zA-Z0-9]$|^[a-zA-Z0-9]$", RegexOptions.Compiled);
+
         public ActionResult Ping(string host)
         {
+            if (string.IsNullOrWhiteSpace(host) || !ValidHostPattern.IsMatch(host))
+            {
+                return new HttpStatusCodeResult(400, "Invalid host.");
+            }
+
+            var systemDirectory = Environment.GetFolderPath(Environment.SpecialFolder.System);
             var psi = new ProcessStartInfo
             {
-                FileName = "cmd.exe",
-                Arguments = "/c ping -n 1 " + host,
+                FileName = Path.Combine(systemDirectory, "PING.EXE"),
                 RedirectStandardOutput = true,
                 UseShellExecute = false
             };
+            psi.ArgumentList.Add("-n");
+            psi.ArgumentList.Add("1");
+            psi.ArgumentList.Add(host);
 
             using (var process = Process.Start(psi))
             {
                 var output = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
-                return Content("<pre>" + output + "</pre>");
+                return Content("<pre>" + HttpUtility.HtmlEncode(output) + "</pre>");
             }
         }
     }
